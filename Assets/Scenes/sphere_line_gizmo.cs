@@ -6,15 +6,15 @@ public class sphere_line_gizmo : MonoBehaviour
 {
     public float radius_circle = 1;
     public float radius_gizmo = 1;
-    
-    public int number_of_lines = 10;
-    public float angle_threshold = 0.0f;
-    
+
     public bool flag_normalize = false;
     public bool flag_detract = false;
-    public bool flag_angle_threshold = false;
+
+    public int number_of_lines = 10;
     public float scalar_factor = 1.0f;
     
+    public bool flag_angle_threshold = false;
+    public float angle_threshold = 0.0f;
 
     private void OnDrawGizmosSelected()
     { 
@@ -22,20 +22,26 @@ public class sphere_line_gizmo : MonoBehaviour
         float increment_angle = (Mathf.PI * 2) / number_of_lines;
         for (int i = 0; i < number_of_lines; i++)
         {
-
+            // Circlular Coords to Cartesian Coords
+            // ------------------------------------
             Vector2 end_pt;
             end_pt.x = Mathf.Cos(increment_angle * i);
             end_pt.y = Mathf.Sin(increment_angle * i);
 
-            Vector2 gizmo_pos = transform.position;
+            // Compute dot product of gizmo_dir and line end_pt(s)
+            // ---------------------------------------------------
+            Vector2 gizmo_dir = transform.position;
             if (flag_normalize)
-                gizmo_pos = gizmo_pos.normalized;
+                gizmo_dir.Normalize();
+            float dp = Vector2.Dot(gizmo_dir, end_pt);
 
-            float dp = Vector2.Dot(gizmo_pos, end_pt);
-                    
-            if(flag_detract)
+            // invert angle dot procuct
+            // -------------------------
+            if (flag_detract)
                 dp = -dp;
 
+            // Check if a given enf_pt is within the threshold
+            // -----------------------------------------------
             if (flag_angle_threshold) 
             {
                if (dp >= angle_threshold)
@@ -44,6 +50,8 @@ public class sphere_line_gizmo : MonoBehaviour
             else
                 end_pt = end_pt * (1.0f + dp * scalar_factor);
 
+            // Draw Gizmos
+            // -----------
             Gizmos.DrawLine(Vector2.zero, end_pt);
             Gizmos.DrawWireSphere(end_pt, radius_circle);
             Gizmos.DrawWireSphere(transform.position, radius_gizmo);
