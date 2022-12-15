@@ -1,6 +1,7 @@
 
 *.asset
 *.meta
+*Library/Artifacts/
 Library/Artifacts/00/004779a5e5d4b92873e9dadcc338dadc
 Library/Artifacts/00/000449251c964c0170e8be3f595afe46
 Library/Artifacts/00/001ecdf21f3659690d0b173a16fb3aa3
